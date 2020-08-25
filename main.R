@@ -24,7 +24,7 @@ cleanNames <- function(nameList) {
 
 # load Zoom files
 # ===============
-file.list = dir(path.data, pattern='^par.*csv$')
+file.list = dir(path.data, pattern=MY.PATTERN)
 if (length(file.list)<1) {
   warning(paste('No files found in folder:',path.data,'. Modify config.R.'))
 }
@@ -79,26 +79,27 @@ for(filename in file.list) {
     di = read.csv(f, stringsAsFactors = FALSE)
     d.ID = rbind(d.ID, data.frame(OrgDefinedId=di$OrgDefinedId, Last.Name=di$Last.Name, First.Name=di$First.Name))
   }
-  fullnames = tolower(paste(d.ID$First.Name, d.ID$Last.Name))
+  d.ID$fullnames = tolower(paste(d.ID$First.Name, d.ID$Last.Name))
 
-  # Match names
-  # ===========
-  d2$OrgID = NA
-  d2$First.Name = NA
-  d2$Last.Name = NA
-  for(nm in levels(d$Name)) {
-    which(agrepl(nm, fullnames)==TRUE) -> q1
+  # Brute Force go Through Classroster
+  # ==================================
+  d.ID$minutes = NA
+  d$Found = FALSE
+  for(j in 1:nrow(d.ID)) {
+    d.ID$fullnames[j]
+    which(agrepl(d.ID$fullnames[j], levels(d$Name))==TRUE) -> q1
     if (length(q1)==0) { q2 = NA } else {
       q2 = q1[1]
-      d2$OrgID[which(d2$Name == nm)] = d.ID$OrgDefinedId[q2]
-      d2$Last.Name[which(d2$Name == nm)] = d.ID$Last.Name[q2]
-      d2$First.Name[which(d2$Name == nm)] = d.ID$First.Name[q2]
+      d$Found[q2] = TRUE
+      if (is.na(d.ID$minutes[q2])) {
+        d.ID$minutes[q2] = d$Total.Duration..Minutes.[q2]
+      } else { d.ID$minutes[q2] = d.ID$minutes[q2] +
+        d$Total.Duration..Minutes.[q2]}
     }
   }
-
-
   fname.noext = gsub(paste0('.',file_ext(filename)),'',filename)
-  write.csv(file = file.path(path.data,paste0('out-',fname.noext, '.csv')), d2)
+  write.csv(d.ID, file=file.path(path.data,paste0('roster-',fname.noext, '.csv')))
+  write.csv(d[which(d$Found==FALSE),], file=file.path(path.data,paste0('missing-',fname.noext, '.csv')))
 }
 
 
