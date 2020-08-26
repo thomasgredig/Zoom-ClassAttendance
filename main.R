@@ -19,6 +19,7 @@ cleanNames <- function(nameList) {
   gsub('mobile','',m1) -> m1
   gsub('@(.*)','',m1) -> m1
   gsub('\\.',' ',m1) -> m1
+  gsub('\\d+','',m1) -> m1
   tolower(gsub('\\s+$','',m1))
 }
 
