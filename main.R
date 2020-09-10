@@ -25,7 +25,7 @@ cleanNames <- function(nameList) {
 
 # load Zoom files
 # ===============
-file.list = dir(path.data, pattern=MY.PATTERN)
+file.list = dir(path.data, pattern=ZOOM.PATTERN)
 if (length(file.list)<1) {
   warning(paste('No files found in folder:',path.data,'. Modify config.R.'))
 }
@@ -39,11 +39,13 @@ for(filename in file.list) {
   print(fname)
   d = read.csv(fname, skip=0, header=TRUE, stringsAsFactors = FALSE)
   if (names(d)[1]=='Meeting.ID') {
+    meetingDate = substr(d$Start.Time[1],1,10)
     d = read.csv(fname, skip=2, header=TRUE, stringsAsFactors = FALSE)
-  }
+  } else {meetingDate = NA; }
   #d$Name..Original.Name.
   d$Name = factor(cleanNames(d$Name..Original.Name.))
 
+  length(grep('Total.Duration..Minutes.',names(d)))
   if (length(grep('Total.Duration..Minutes.',names(d)))<1) {
     d$Join.Time = as.POSIXct(d$Join.Time)
     d$Leave.Time = as.POSIXct(d$Leave.Time) + 2  # time to change to break-out rooms
@@ -99,6 +101,7 @@ for(filename in file.list) {
     }
   }
   fname.noext = gsub(paste0('.',file_ext(filename)),'',filename)
+  names(d.ID)[5]=meetingDate
   write.csv(d.ID, file=file.path(path.data,paste0('roster-',fname.noext, '.csv')))
   write.csv(d[which(d$Found==FALSE),], file=file.path(path.data,paste0('missing-',fname.noext, '.csv')))
 }

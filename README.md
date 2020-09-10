@@ -3,9 +3,10 @@
 
 ## Setup
 
-- **Step 1:** configure the `config.R` file with the data path
+- **Step 1:** configure the `myConfig.R` file with the data path
 - **Step 2:** download the `Reports` from Zoom and move to the data path
 - **Step 3:** download an empty gradebook from Desire2Learn and save into the data path
+- **Step 4:** run `main.R`
 
 
 ## Process
