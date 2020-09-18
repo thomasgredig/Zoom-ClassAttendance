@@ -6,7 +6,7 @@
 - **Step 1:** configure the `myConfig.R` file with the data path
 - **Step 2:** download the `Reports` from Zoom and move to the data path
 - **Step 3:** download an empty gradebook from Desire2Learn and save into the data path
-- **Step 4:** run `main.R`
+- **Step 4:** run `zoom-attendance.R`, will create an output file with attendance times
 
 
 ## Process
