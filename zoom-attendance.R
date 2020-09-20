@@ -115,8 +115,17 @@ head(r)
 m = dcast(r, OrgDefinedId ~ date )
 head(m)
 
-m$sum = apply(m[,-1], 1, sum)
-plot(m$sum)
+zoomTime.min = apply(m[,-1], 1, sum)
+zoomMissed.days = apply(m[,-1], 1, function(x)sum(x==0))
+
+# Attendance in Percentage
+apply(m[,-1], 2, function(x)sum(x>0))/(nrow(d.ID)/100)
+
+m$zoomTime.min = zoomTime.min
+m$zoomMissed.days= zoomMissed.days
+
+plot(m$zoomTime.min)
 head(m)
 m$end = "#"
 write.csv(file = file.path(path.data,'output.csv'), m, row.names = FALSE)
+
