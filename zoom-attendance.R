@@ -39,7 +39,6 @@ d.ID$unique = paste0(substr(d.ID$fullnames,1,3),substr(d.ID$fullnames,nchar(d.ID
 
 head(d.ID)
 
-
 # load Zoom files
 # ===============
 file.list = dir(path.data, pattern=ZOOM.PATTERN)
@@ -124,8 +123,13 @@ apply(m[,-1], 2, function(x)sum(x>0))/(nrow(d.ID)/100)
 m$zoomTime.min = zoomTime.min
 m$zoomMissed.days= zoomMissed.days
 
+# add name
+d1 = data.frame(OrgDefinedId= d.ID$OrgDefinedId, Last.Name = d.ID$Last.Name, First.Name = d.ID$First.Name)
+m = merge(m,d1)
+
 plot(m$zoomTime.min)
 head(m)
 m$end = "#"
 write.csv(file = file.path(path.data,'output.csv'), m, row.names = FALSE)
+
 
