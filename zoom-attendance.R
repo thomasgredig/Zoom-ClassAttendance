@@ -36,9 +36,9 @@ for(f in fname) {
 }
 d.ID$fullnames = tolower(paste(d.ID$First.Name, d.ID$Last.Name))
 d.ID$unique = paste0(substr(d.ID$fullnames,1,3),substr(d.ID$fullnames,nchar(d.ID$fullnames)-3,nchar(d.ID$fullnames)))
-
+d.ID
 head(d.ID)
-
+tail(d.ID)
 # load Zoom files
 # ===============
 file.list = dir(path.data, pattern=ZOOM.PATTERN)
@@ -49,11 +49,14 @@ if (length(file.list)<1) {
 print(paste("Found ", length(file.list)," Zoom files."))
 #fname = file.path(path.data, file.list[1])
 result = data.frame()
+result.stats = data.frame()
+filename = file.list[1]
 for(filename in file.list) {
   fname = file.path(path.data, filename)
   print(fname)
 
   d = read.csv(fname, skip=0, header=TRUE, stringsAsFactors = FALSE)
+  totalParticipants = d$Participants[1]
   if (names(d)[1]=='Meeting.ID') {
     meetingDate = substr(d$Start.Time[1],1,10)
     d = read.csv(fname, skip=2, header=TRUE, stringsAsFactors = FALSE)
@@ -65,6 +68,8 @@ for(filename in file.list) {
 
   d.ID$time = 0
   d.ID$cnt = 0
+  gsub('\\s{2}',' ',d$n1) -> d$n1
+  gsub('\\s{2}',' ',d$n2) -> d$n2
   for(i in 1:nrow(d)) {
     nm = d$n1[i]
     q = grep(nm, d.ID$fullnames)
@@ -101,6 +106,8 @@ for(filename in file.list) {
   }
   d.ID$date = meetingDate
   result = rbind(result, d.ID)
+  rs = data.frame(meetingDate, totalParticipants)
+  result.stats = rbind(result.stats, rs)
 }
 
 head(result)
@@ -132,4 +139,4 @@ head(m)
 m$end = "#"
 write.csv(file = file.path(path.data,'output.csv'), m, row.names = FALSE)
 
-
+result.stats
