@@ -139,4 +139,5 @@ head(m)
 m$end = "#"
 write.csv(file = file.path(path.data,'output.csv'), m, row.names = FALSE)
 
-result.stats
+result.stats$meetingDate = as.character(levels(result.stats$meetingDate)[result.stats$meetingDate])
+result.stats[order(result.stats$meetingDate),]
