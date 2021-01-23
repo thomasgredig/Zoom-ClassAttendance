@@ -39,6 +39,8 @@ d.ID$unique = paste0(substr(d.ID$fullnames,1,3),substr(d.ID$fullnames,nchar(d.ID
 d.ID
 head(d.ID)
 tail(d.ID)
+
+
 # load Zoom files
 # ===============
 file.list = dir(path.data, pattern=ZOOM.PATTERN)
@@ -47,6 +49,19 @@ if (length(file.list)<1) {
 }
 
 print(paste("Found ", length(file.list)," Zoom files."))
+# rename files if needed
+file.list.rename = file.list[grep('participants_\\d{6}.*',file.list)]
+for(f in file.list.rename) {
+  fname = file.path(path.data, f)
+  d = read.csv(fname, skip=0, header=TRUE, stringsAsFactors = FALSE)
+  st.dt = substr(d$Start.Time[1],1,16)
+  gsub('[\\/]','-',st.dt) -> st.dt
+  gsub(':','h',st.dt) -> st.dt
+  fname.new = file.path(path.data, paste0('participants_',st.dt,'.csv'))
+  file.rename(from=fname, to=fname.new)
+}
+file.list = dir(path.data, pattern=ZOOM.PATTERN)
+
 #fname = file.path(path.data, file.list[1])
 result = data.frame()
 result.stats = data.frame()
@@ -141,3 +156,4 @@ write.csv(file = file.path(path.data,'output.csv'), m, row.names = FALSE)
 
 result.stats$meetingDate = as.character(levels(result.stats$meetingDate)[result.stats$meetingDate])
 result.stats[order(result.stats$meetingDate),]
+
