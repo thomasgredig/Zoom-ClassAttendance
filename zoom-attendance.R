@@ -27,7 +27,7 @@ cleanNames <- function(nameList) {
 
 # Load OrgIDs and Students enrolled in Course
 # ============================================
-f1=dir(path.data, pattern='GradesExport')
+f1=dir(path.data, pattern='GradesExport')[1]
 fname=file.path(path.data, f1)
 d.ID = data.frame()
 for(f in fname) {
@@ -151,9 +151,14 @@ m = merge(m,d1)
 
 plot(m$zoomTime.min)
 head(m)
-m$end = "#"
+m$`End-of-Line Indicator` = "#"
+names(m)[which(names(m)=='zoomTime.min')]="ZoomTimeMin Points Grade"
+names(m)[which(names(m)=='zoomMissed.days')]="ZoomMissedDays Points Grade"
+
+
 write.csv(file = file.path(path.data,'output.csv'), m, row.names = FALSE)
 
-result.stats$meetingDate = as.character(levels(result.stats$meetingDate)[result.stats$meetingDate])
-result.stats[order(result.stats$meetingDate),]
+
+#result.stats$meetingDate = as.character(levels(result.stats$meetingDate)[result.stats$meetingDate])
+#result.stats[order(result.stats$meetingDate),]
 
